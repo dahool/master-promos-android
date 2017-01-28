@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ar.sgt.mastersorpresas.gcm.RegistrationIntentService;
 import com.ar.sgt.mastersorpresas.model.Promo;
@@ -74,7 +76,11 @@ public class MainActivity extends AppCompatActivity implements PromoEventListene
             @Override
             public void postExecute(Object result) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                resumeAdapter();
+                if (result == null) {
+                    Toast.makeText(MainActivity.this, getString(R.string.retrieve_error), Toast.LENGTH_LONG).show();;
+                } else {
+                    resumeAdapter();
+                }
             }
         });
         task.execute();
@@ -113,11 +119,12 @@ public class MainActivity extends AppCompatActivity implements PromoEventListene
 
     @Override
     public void onShareEvent(Promo promo) {
-        Intent sendIntent = new Intent();
+        /*Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, promo.getUrl());
         sendIntent.setType("text/plain");
-        startActivity(sendIntent);
+        startActivity(sendIntent);*/
+        ShareCompat.IntentBuilder.from(this).setType("text/plain").setText(promo.getUrl()).startChooser();
     }
 
     @Override

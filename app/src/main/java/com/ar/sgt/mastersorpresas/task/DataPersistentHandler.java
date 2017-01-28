@@ -28,6 +28,8 @@ public class DataPersistentHandler {
     }
 
     public boolean persist(List<Promo> promos) {
+        if (promos == null) return false;
+
         Log.d(TAG, "Persist: " + promos.toString());
 
         DaoSession daoSession = getApplication().getDaoSession();

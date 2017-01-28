@@ -76,6 +76,8 @@ public class RegistrationIntentService extends IntentService {
 
             URL url = new URL(serviceUrl);
             conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(30000);
+            conn.setReadTimeout(30000);
             // enable POST
             conn.setDoOutput(true);
 

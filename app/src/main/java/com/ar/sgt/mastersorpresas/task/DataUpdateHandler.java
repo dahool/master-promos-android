@@ -1,6 +1,8 @@
 package com.ar.sgt.mastersorpresas.task;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.ar.sgt.mastersorpresas.R;
@@ -19,6 +21,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,12 +59,15 @@ public class DataUpdateHandler {
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
+            Log.d(TAG, "Result: " + list.toString());
         }
-        Log.d(TAG, "Result: " + list.toString());
         return list;
     }
 
     private JSONArray retrieveData() {
+
+        if (!isNetworkAvaiable()) return null;
+
         String serviceUrl = getContext().getString(R.string.RETRIEVE_URL, getContext().getString(R.string.SERVICE_HOST));
         String device = AndroidUtils.getDeviceName();
 
@@ -73,7 +79,7 @@ public class DataUpdateHandler {
 
             URL url = new URL(serviceUrl);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(30000);
+            conn.setConnectTimeout(10000);
             conn.setReadTimeout(30000);
 
             reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -98,6 +104,12 @@ public class DataUpdateHandler {
             }
         }
         return null;
+    }
+
+    private boolean isNetworkAvaiable() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
 }

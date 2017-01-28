@@ -26,8 +26,6 @@ public class NotificationMngr {
 
     private static final String NOTIFICATION_GROUP = "SorpresasNotification";
 
-    private static final int MAX_EVENTS = 10;
-
     public static void showNotification(Context context, List<Promo> promos) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

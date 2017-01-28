@@ -60,8 +60,10 @@ public class DataUpdateTask extends AsyncTask<Void, Void, List<Promo>> {
     @Override
     protected void onPostExecute(List<Promo> list) {
 
-        DataPersistentHandler persistentHandler = new DataPersistentHandler(getApplication());
-        persistentHandler.persist(list);
+        if (list != null) {
+            DataPersistentHandler persistentHandler = new DataPersistentHandler(getApplication());
+            persistentHandler.persist(list);
+        }
 
         if (statusListener != null) {
             statusListener.postExecute(list);

@@ -32,7 +32,7 @@ public class MessageReceiverService extends FirebaseMessagingService {
 
         DataPersistentHandler persistentHandler = new DataPersistentHandler(getApplication());
         
-        if (persistentHandler.persist(promos)) {
+        if (promos != null && persistentHandler.persist(promos)) {
             showNotification(promos);
         }
     }
