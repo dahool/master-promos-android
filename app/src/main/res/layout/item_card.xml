@@ -12,6 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="?attr/actionBarTheme"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/cardToolbar" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,6 +78,14 @@
                 android:layout_alignParentStart="true" />
 
         </RelativeLayout>
+
+        <TextView
+            android:text="Válido para pagos entre el 31/01/2017 al 06/02/2017"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/colorDatesFg"
+            android:id="@+id/promoDates" />
 
         <LinearLayout
             android:id="@id/buttonGroup"
