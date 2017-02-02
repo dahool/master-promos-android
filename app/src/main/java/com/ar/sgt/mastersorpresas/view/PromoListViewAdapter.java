@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,40 +84,20 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
 
         holder.mText.setText(promo.getText());
 
+        holder.toolbar.setTitle(promo.getTitle());
+        if (Boolean.TRUE.equals(promo.getHasStock())) {
+            holder.mDates.setText(getApplication().getString(R.string.promo_date_text, promo.getDateFrom(), promo.getDateTo()));
+        } else if (promo.getHasStock() == null) {
+            holder.mDates.setText("");
+        } else {
+            holder.mDates.setText(getApplication().getString(R.string.promo_outofstock));
+        }
+
+
         Log.d(TAG, "" + promo.getBitmap());
         if (promo.getBitmap() != null) {
-            //holder.mImage.setImageDrawable(Drawable.createFromStream(new ByteArrayInputStream(promo.getBitmap()), "bitmap"));
-            //holder.mImage.refreshDrawableState();
             holder.mImage.setImageBitmap(mBitmapConverter.byteArrayToBitmap(promo.getBitmap()));
         } else if (!TextUtils.isEmpty(promo.getImage())) {
-            /*ImageDownloadTask downloadTask = new ImageDownloadTask(new AsyncTaskStatusListener<Bitmap>() {
-                @Override
-                public void preExecute() {
-                }
-                @Override
-                public void postExecute(Bitmap result) {
-                    if (result != null) {
-                        promo.setBitmap(mBitmapConverter.bitmapToByteArray(result));
-                        getApplication().getDaoSession().getPromoDao().update(promo);
-                        Log.d(TAG, "" + promo.getBitmap());
-                        mPromoList.set(position, promo);
-                        //holder.mImage.setImageDrawable(Drawable.createFromStream(new ByteArrayInputStream(promo.getBitmap()), "bitmap"));
-                        //holder.mImage.setImageDrawable(null);
-                        holder.mImage.setImageBitmap(result);
-                    } else {
-                        holder.mImage.setImageDrawable(ContextCompat.getDrawable(getApplication().getApplicationContext(), R.drawable.ic_mastercard_logo));
-                    }
-                    Intent i = new Intent(MainActivity.ImageUpdateReceiver.ACTION);
-                    i.putExtra(MainActivity.ImageUpdateReceiver.EXTRA_POSITION, position);
-                    getApplication().sendBroadcast(i);
-                }
-            });
-            try {
-                downloadTask.execute(new URL(promo.getImage()));
-            } catch (MalformedURLException e) {
-                Log.e(TAG, promo.getImage(), e);
-                downloadTask = null;
-            }*/
             Picasso.with(getApplication().getApplicationContext())
                     .load(promo.getImage())
                     .placeholder(R.drawable.no_image)
@@ -140,57 +121,7 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
                         public void onError() {
                         }
                     });
-                    /*.into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            holder.mImage.setImageDrawable(null);
-                            holder.mImage.setImageBitmap(bitmap);
-                            holder.mImage.refreshDrawableState();
-                            promo.setBitmap(bitmap);
-                            getApplication().getDaoSession().getPromoDao().update(promo);
-                            mPromoList.set(position, promo);
-                            Intent i = new Intent(MainActivity.ImageUpdateReceiver.ACTION);
-                            i.putExtra(MainActivity.ImageUpdateReceiver.EXTRA_POSITION, position);
-                            getApplication().sendBroadcast(i);
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-                            holder.mImage.setImageDrawable(errorDrawable);
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                            holder.mImage.setImageDrawable(placeHolderDrawable);
-                        }
-                    });*/
         }
-
-
-        /*
-        if (promo.getBitmap() != null) {
-
-        } else {
-            ImageDownloadTask downloadTask = new ImageDownloadTask(new AsyncTaskStatusListener<Bitmap>() {
-                @Override
-                public void preExecute() {
-                }
-                @Override
-                public void postExecute(Bitmap result) {
-                    promo.setBitmap(result);
-                    getApplication().getDaoSession().getPromoDao().update(promo);
-                    holder.mImage.setImageBitmap(promo.getBitmap());
-                    holder.mImage.refreshDrawableState();
-                }
-            });
-            try {
-                downloadTask.execute(new URL(promo.getUrl()));
-            } catch (MalformedURLException e) {
-                Log.e(TAG, promo.getUrl(), e);
-                downloadTask = null;
-            }
-        }*/
-
         holder.openButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,8 +154,10 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
         private TextView mText;
         private TextView mPoints;
         private TextView mPercentage;
+        private TextView mDates;
         private Button openButton;
         private Button shareButton;
+        private Toolbar toolbar;
 
         public PromoViewHolder(View itemView) {
             super(itemView);
@@ -232,8 +165,10 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
             mPoints = (TextView) itemView.findViewById(R.id.promoPoints);
             mPercentage = (TextView) itemView.findViewById(R.id.promoPercentage);
             mImage = (ImageView) itemView.findViewById(R.id.promoImage);
+            mDates = (TextView) itemView.findViewById(R.id.promoDates);
             openButton = (Button) itemView.findViewById(R.id.buttonOpen);
             shareButton = (Button) itemView.findViewById(R.id.buttonShare);
+            toolbar = (Toolbar) itemView.findViewById(R.id.cardToolbar);
         }
 
     }

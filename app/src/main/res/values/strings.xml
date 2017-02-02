@@ -14,6 +14,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="promo_date_text">Valid from %1$s to %2$s</string>
+    <string name="promo_outofstock">Out of stock</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example settings for Notifications -->

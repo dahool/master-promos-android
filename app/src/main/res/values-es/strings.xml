@@ -12,4 +12,6 @@
     <string name="pref_title_vibrate">Vibrar</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="retrieve_error">No es posible actualizar</string>
+    <string name="promo_date_text">Válido del %1$s al %2$s</string>
+    <string name="promo_outofstock">Sin stock</string>
 </resources>

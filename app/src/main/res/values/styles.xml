@@ -4,4 +4,8 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
     </style>
 
+    <style name="Promo.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

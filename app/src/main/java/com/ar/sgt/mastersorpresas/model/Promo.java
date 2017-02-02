@@ -38,9 +38,18 @@ public class Promo implements Serializable {
 
 	private String percentage;
 
-	@Generated(hash = 647784266)
+    private String title;
+
+    private String dateFrom;
+
+    private String dateTo;
+
+    private Boolean hasStock;
+
+	@Generated(hash = 626950417)
 	public Promo(Long key, String url, String image, byte[] bitmap, String text,
-									String points, String percentage) {
+									String points, String percentage, String title, String dateFrom,
+									String dateTo, Boolean hasStock) {
 					this.key = key;
 					this.url = url;
 					this.image = image;
@@ -48,6 +57,10 @@ public class Promo implements Serializable {
 					this.text = text;
 					this.points = points;
 					this.percentage = percentage;
+					this.title = title;
+					this.dateFrom = dateFrom;
+					this.dateTo = dateTo;
+					this.hasStock = hasStock;
 	}
 
 	@Generated(hash = 363330543)
@@ -98,7 +111,39 @@ public class Promo implements Serializable {
 		return percentage;
 	}
 
-	public void setPercentage(String percentage) {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(String dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public String getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(String dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    public Boolean getHasStock() {
+        return hasStock;
+    }
+
+    public void setHasStock(Boolean hasStock) {
+        this.hasStock = hasStock;
+    }
+
+    public void setPercentage(String percentage) {
 		this.percentage = percentage;
 	}
 
@@ -126,11 +171,16 @@ public class Promo implements Serializable {
     @Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("Promo [");
-		b.append("text=").append(getText()).append(";");
-		b.append("url=").append(getUrl()).append(";");
-		b.append("image=").append(getImage()).append(";");
-		b.append("points=").append(getPoints()).append(";");
-		b.append("percentage=").append(getPercentage()).append("]");
+        b.append("key=").append(getKey()).append(";");
+        b.append("title=").append(title).append(";");
+        b.append("text=").append(text).append(";");
+        b.append("dateFrom=").append(dateFrom).append(";");
+        b.append("dateTo=").append(dateTo).append(";");
+        b.append("url=").append(url).append(";");
+        b.append("image=").append(image).append(";");
+        b.append("points=").append(points).append(";");
+        b.append("hasStock=").append(hasStock).append(";");
+        b.append("percentage=").append(percentage).append("]");
 		return b.toString();
 	}
 	
