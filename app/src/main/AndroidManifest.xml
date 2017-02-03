@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ar.sgt.mastersorpresas">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -37,6 +39,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ar.sgt.mastersorpresas.MainActivity" />
         </activity>
+
+        <receiver
+            android:name=".utils.BootAlarmRegistrar" android:enabled="true" android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

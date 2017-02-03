@@ -1,15 +1,21 @@
 package com.ar.sgt.mastersorpresas;
 
+import android.*;
+import android.Manifest;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -200,10 +206,18 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
                 mRecycleView.getAdapter().notifyItemChanged((int) args[0]);
                 break;
             case NOTIFICATION:
+                askPermission();
                 createReminder(promo);
                 resumeAdapter();
                 this.onFragmentEventListener.onFragmentEvent(getId());
                 break;
+        }
+    }
+
+    private void askPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECEIVE_BOOT_COMPLETED);
+        if (PackageManager.PERMISSION_GRANTED != permissionCheck) {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.RECEIVE_BOOT_COMPLETED}, 0);
         }
     }
 
