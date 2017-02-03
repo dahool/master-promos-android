@@ -1,136 +1,65 @@
 package com.ar.sgt.mastersorpresas;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.ar.sgt.mastersorpresas.gcm.RegistrationIntentService;
-import com.ar.sgt.mastersorpresas.model.Promo;
-import com.ar.sgt.mastersorpresas.model.PromoDao;
-import com.ar.sgt.mastersorpresas.task.AsyncTaskStatusListener;
-import com.ar.sgt.mastersorpresas.task.DataUpdateTask;
 import com.ar.sgt.mastersorpresas.utils.NotificationMngr;
-import com.ar.sgt.mastersorpresas.view.PromoEventListener;
-import com.ar.sgt.mastersorpresas.view.PromoListViewAdapter;
+import com.ar.sgt.mastersorpresas.view.OnFragmentEventListener;
 
-import java.lang.ref.WeakReference;
+public class MainActivity extends AppCompatActivity implements OnFragmentEventListener {
 
-public class MainActivity extends AppCompatActivity implements PromoEventListener {
+    private static final String TAG = "MainActivity";
 
-    private RecyclerView mRecycleView;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private PromoListViewAdapter adapter;
-
-    private ImageUpdateReceiver mReceiver;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_tab);
 
-        mRecycleView = (RecyclerView) findViewById(R.id.promoList);
-        mRecycleView.setHasFixedSize(true);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecycleView.setLayoutManager(mLayoutManager);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-            }
-        });
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
-        if (((App) getApplication()).getDaoSession().getPromoDao().count() == 0) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            refreshData();
-        }
+        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
     }
 
-    private void refreshData() {
-        DataUpdateTask task = new DataUpdateTask(getApplication());
-        task.setStatusListener(new AsyncTaskStatusListener() {
-            @Override
-            public void preExecute() {
-                // do nothing
-            }
-            @Override
-            public void postExecute(Object result) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                if (result == null) {
-                    Toast.makeText(MainActivity.this, getString(R.string.retrieve_error), Toast.LENGTH_LONG).show();;
-                } else {
-                    resumeAdapter();
-                }
-            }
-        });
-        task.execute();
-    }
-
-    @Override
-    protected void onResume() {
-        mReceiver = new ImageUpdateReceiver(this);
-        registerReceiver(mReceiver, new IntentFilter(ImageUpdateReceiver.ACTION));
-
-        resumeAdapter();
-        NotificationMngr.hideNotification(this);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(mReceiver);
-        super.onPause();
-    }
-
-    private void resumeAdapter() {
-        PromoDao promoDao = ((App) getApplication()).getDaoSession().getPromoDao();
-
-        adapter = new PromoListViewAdapter(getApplication(), this, promoDao.loadAll());
-        mRecycleView.setAdapter(adapter);
-        mRecycleView.invalidate();
-        mRecycleView.getAdapter().notifyDataSetChanged();
-    }
-
-    @Override
-    public void onOpenEvent(Promo promo) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(promo.getUrl()));
-        startActivity(browserIntent);
-    }
-
-    @Override
-    public void onShareEvent(Promo promo) {
-        /*Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, promo.getUrl());
-        sendIntent.setType("text/plain");
-        startActivity(sendIntent);*/
-        ShareCompat.IntentBuilder.from(this).setType("text/plain").setText(promo.getUrl()).startChooser();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        NotificationMngr.hideNotification(this);
+        super.onResume();
     }
 
     @Override
@@ -144,26 +73,53 @@ public class MainActivity extends AppCompatActivity implements PromoEventListene
         }
     }
 
-    public static class ImageUpdateReceiver extends BroadcastReceiver {
-
-        public static final String ACTION = "com.ar.sgt.mastersorpresas.MainActivity.ImageUpdateReceiver";
-
-        public static final String EXTRA_POSITION = "POSITION";
-
-        private WeakReference<MainActivity> mActivity;
-
-        public ImageUpdateReceiver(final MainActivity activity) {
-            mActivity = new WeakReference<MainActivity>(activity);
-        }
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("ImageUpdateReceiver", "Enter");
-            MainActivity activity = mActivity.get();
-            if (activity != null) {
-                Log.d("ImageUpdateReceiver", "Update Image");
-                activity.mRecycleView.getAdapter().notifyItemChanged(intent.getIntExtra(EXTRA_POSITION, 0));
-            }
-        }
+    @Override
+    public void onFragmentEvent(int id) {
+        Log.d(TAG, "Handle fragment event: " + id);
+        /*switch (id) {
+            case R.id.fragment_promo_list:
+                ReminderListFragment rfr = (ReminderListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_reminder_list);
+                rfr.resumeAdapter();
+                break;
+            case R.id.fragment_reminder_list:
+                PromoListFragment pfr = (PromoListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_reminder_list);
+                pfr.resumeAdapter();
+                break;
+        }*/
     }
 
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return PromoListFragment.newInstance(getApplication());
+                case 1:
+                    return ReminderListFragment.newInstance(getApplication());
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.tab_promos);
+                case 1:
+                    return getString(R.string.tab_reminder);
+            }
+            return null;
+        }
+    }
 }

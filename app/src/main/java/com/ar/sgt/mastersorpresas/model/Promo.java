@@ -46,10 +46,12 @@ public class Promo implements Serializable {
 
     private Boolean hasStock;
 
-	@Generated(hash = 626950417)
+	private Boolean scheduled;
+
+	@Generated(hash = 660444528)
 	public Promo(Long key, String url, String image, byte[] bitmap, String text,
 									String points, String percentage, String title, String dateFrom,
-									String dateTo, Boolean hasStock) {
+									String dateTo, Boolean hasStock, Boolean scheduled) {
 					this.key = key;
 					this.url = url;
 					this.image = image;
@@ -61,6 +63,7 @@ public class Promo implements Serializable {
 					this.dateFrom = dateFrom;
 					this.dateTo = dateTo;
 					this.hasStock = hasStock;
+					this.scheduled = scheduled;
 	}
 
 	@Generated(hash = 363330543)
@@ -153,6 +156,14 @@ public class Promo implements Serializable {
 
 	public byte[] getBitmap() {
 		return bitmap;
+	}
+
+	public Boolean getScheduled() {
+		return scheduled;
+	}
+
+	public void setScheduled(Boolean scheduled) {
+		this.scheduled = scheduled;
 	}
 
 	@Override

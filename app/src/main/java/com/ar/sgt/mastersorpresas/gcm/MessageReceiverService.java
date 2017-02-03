@@ -2,7 +2,9 @@ package com.ar.sgt.mastersorpresas.gcm;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -39,7 +41,10 @@ public class MessageReceiverService extends FirebaseMessagingService {
 
     private void showNotification(List<Promo> promos) {
         Log.d(TAG, "Show notification");
-        NotificationMngr.showNotification(getApplicationContext(), promos);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sharedPreferences.getBoolean("notifications_new_message", true)) {
+            NotificationMngr.showNotification(getApplicationContext(), promos);
+        }
     }
 
 }

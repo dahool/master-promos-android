@@ -46,6 +46,7 @@ public class DataPersistentHandler {
                         Promo newPromo = promos.get(promos.indexOf(p));
                         if (!newPromo.getImage().equals(p.getImage())) {
                             p.setImage(newPromo.getImage());
+                            p.setHasStock(newPromo.getHasStock());
                             p.setBitmap(null);
                             Log.d(TAG, "Update: " + p);
                             promoDao.update(p);

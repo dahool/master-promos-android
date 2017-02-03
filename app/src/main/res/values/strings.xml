@@ -3,6 +3,9 @@
 
     <string name="button_share">Share</string>
     <string name="button_open">Open</string>
+    <string name="button_disable_alarm">Disable</string>
+    <string name="button_enable_alarm">Enable</string>
+    <string name="button_delete">Remove</string>
 
     <string name="notification_title">Sorpresas</string>
 
@@ -16,16 +19,25 @@
 
     <string name="promo_date_text">Valid from %1$s to %2$s</string>
     <string name="promo_outofstock">Out of stock</string>
+    <string name="action_reminder">Reminder</string>
+
+    <string name="tab_promos">Promos</string>
+    <string name="tab_reminder">Reminders</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_reminder">Reminders</string>
 
     <string name="pref_title_new_message_notifications">Show notifications</string>
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_reminder_time">Preferred reminder time</string>
+
+    <string name="reminder_set">Reminder set for %1$s</string>
+    <string name="reminder_unset">Reminder disabled for %1$s</string>
 
 </resources>

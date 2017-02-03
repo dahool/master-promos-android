@@ -28,14 +28,6 @@ public class NotificationMngr {
 
     public static void showNotification(Context context, List<Promo> promos) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // check if we should show notifications
-        if (!sharedPreferences.getBoolean("notifications_new_message", true)) return;
-
-        Intent activityIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
-
         String title = context.getString(R.string.notification_title);
 
         NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle()
@@ -46,13 +38,24 @@ public class NotificationMngr {
             style.addLine(p.getText());
         }
 
+        showNotification(context, title, style, NOTIFICATION_GROUP, NOTIFICATION_ID);
+
+    }
+
+    public static void showNotification(Context context, String title, NotificationCompat.Style style, String group, int id) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(title)
                         .setContentText(title)
-                        .setGroup(NOTIFICATION_GROUP)
+                        .setGroup(group)
                         .setGroupSummary(true)
                         .setAutoCancel(true)
                         .setStyle(style);
@@ -71,12 +74,12 @@ public class NotificationMngr {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = mBuilder.build();
 
-        manager.notify(NOTIFICATION_ID, notification);
+        manager.notify(id, notification);
     }
 
     public static void hideNotification(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NOTIFICATION_ID);
+        manager.cancelAll();
     }
 
 }

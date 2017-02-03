@@ -1,18 +1,14 @@
 package com.ar.sgt.mastersorpresas.view;
 
 import android.app.Application;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,19 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ar.sgt.mastersorpresas.App;
-import com.ar.sgt.mastersorpresas.MainActivity;
 import com.ar.sgt.mastersorpresas.R;
 import com.ar.sgt.mastersorpresas.model.Promo;
 import com.ar.sgt.mastersorpresas.model.utils.BitmapConverter;
-import com.ar.sgt.mastersorpresas.task.AsyncTaskStatusListener;
-import com.ar.sgt.mastersorpresas.task.ImageDownloadTask;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -44,13 +34,13 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
 
     private final List<Promo> mPromoList;
 
-    private PromoEventListener mEventListener;
+    private OnCardEventListener mEventListener;
 
     private App mApplication;
 
     private BitmapConverter mBitmapConverter = new BitmapConverter();
 
-    public PromoListViewAdapter(Application application, PromoEventListener eventListener, List<Promo> promos) {
+    public PromoListViewAdapter(Application application, OnCardEventListener eventListener, List<Promo> promos) {
         this.mPromoList = promos;
         this.mEventListener = eventListener;
         this.mApplication = (App) application;
@@ -58,7 +48,7 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
 
     @Override
     public PromoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.promo_card, parent, false);
         PromoViewHolder pvh = new PromoViewHolder(v);
         return pvh;
     }
@@ -67,6 +57,18 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
         return mApplication;
     }
 
+    private void inflateMenu(final Promo promo, final PromoViewHolder holder, final int position) {
+        if (!Boolean.TRUE.equals(promo.getScheduled()) && promo.getDateTo() != null && promo.getDateFrom() != null) {
+            holder.toolbar.inflateMenu(R.menu.cardmenu);
+            holder.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    mEventListener.onCardEvent(EventType.NOTIFICATION, promo, position);
+                    return true;
+                }
+            });
+        }
+    }
     @Override
     public void onBindViewHolder(final PromoViewHolder holder, final int position) {
         final Promo promo = this.mPromoList.get(position);
@@ -85,14 +87,16 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
         holder.mText.setText(promo.getText());
 
         holder.toolbar.setTitle(promo.getTitle());
+
         if (Boolean.TRUE.equals(promo.getHasStock())) {
             holder.mDates.setText(getApplication().getString(R.string.promo_date_text, promo.getDateFrom(), promo.getDateTo()));
-        } else if (promo.getHasStock() == null) {
-            holder.mDates.setText("");
-        } else {
+            inflateMenu(promo, holder, position);
+        } else if (promo.getHasStock() != null) {
             holder.mDates.setText(getApplication().getString(R.string.promo_outofstock));
+            inflateMenu(promo, holder, position);
+        } else {
+            holder.mDates.setText("");
         }
-
 
         Log.d(TAG, "" + promo.getBitmap());
         if (promo.getBitmap() != null) {
@@ -111,11 +115,9 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                             byte[] bitmapdata = stream.toByteArray();
                             promo.setBitmap(bitmapdata);
-                            getApplication().getDaoSession().getPromoDao().update(promo);
+                            getApplication().getDaoSession().getPromoDao().save(promo);
                             mPromoList.set(position, promo);
-                            Intent i = new Intent(MainActivity.ImageUpdateReceiver.ACTION);
-                            i.putExtra(MainActivity.ImageUpdateReceiver.EXTRA_POSITION, position);
-                            getApplication().sendBroadcast(i);
+                            mEventListener.onCardEvent(EventType.UPDATE, promo, position);
                         }
                         @Override
                         public void onError() {
@@ -125,15 +127,15 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
         holder.openButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "Open: " + promo.getText());
-                mEventListener.onOpenEvent(promo);
+                Log.i(TAG, "Open: " + promo.getTitle());
+                mEventListener.onCardEvent(EventType.OPEN, promo);
             }
         });
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "Share: " + promo.getText());
-                mEventListener.onShareEvent(promo);
+                Log.i(TAG, "Share: " + promo.getTitle());
+                mEventListener.onCardEvent(EventType.SHARE, promo);
             }
         });
     }
@@ -141,6 +143,10 @@ public class PromoListViewAdapter extends RecyclerView.Adapter<PromoListViewAdap
     @Override
     public int getItemCount() {
         return this.mPromoList.size();
+    }
+
+    public void updateItem(Promo item, int position) {
+        mPromoList.set(position, item);
     }
 
     @Override
