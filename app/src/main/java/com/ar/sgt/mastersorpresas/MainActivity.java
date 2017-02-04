@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ar.sgt.mastersorpresas.gcm.RegistrationIntentService;
+import com.ar.sgt.mastersorpresas.utils.AlarmReceiver;
 import com.ar.sgt.mastersorpresas.utils.NotificationMngr;
 import com.ar.sgt.mastersorpresas.view.OnFragmentEventListener;
 
@@ -45,10 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentEventLi
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,16 +74,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentEventLi
     @Override
     public void onFragmentEvent(int id) {
         Log.d(TAG, "Handle fragment event: " + id);
-        /*switch (id) {
-            case R.id.fragment_promo_list:
-                ReminderListFragment rfr = (ReminderListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_reminder_list);
-                rfr.resumeAdapter();
-                break;
-            case R.id.fragment_reminder_list:
-                PromoListFragment pfr = (PromoListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_reminder_list);
-                pfr.resumeAdapter();
-                break;
-        }*/
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

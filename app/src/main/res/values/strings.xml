@@ -23,6 +23,9 @@
 
     <string name="tab_promos">Promos</string>
     <string name="tab_reminder">Reminders</string>
+    <string name="reminder_expire">Voucher %1$s expires on %2$s</string>
+    <string name="reminder_expire_today">Voucher %1$s expires today</string>
+    <string name="no_promos">No promotions to show</string>
 
     <!-- Strings related to Settings -->
 

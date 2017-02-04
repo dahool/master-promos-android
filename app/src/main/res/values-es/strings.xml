@@ -12,7 +12,7 @@
     <string name="pref_title_vibrate">Vibrar</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="retrieve_error">No es posible actualizar</string>
-    <string name="promo_date_text">Válido desde %1$s a %2$s</string>
+    <string name="promo_date_text">Válido desde el %1$s al %2$s</string>
     <string name="promo_outofstock">Sin stock</string>
     <string name="action_reminder">Recordar</string>
     <string name="tab_promos">Promos</string>
@@ -23,5 +23,8 @@
     <string name="pref_title_reminder_time">Hora de recordatorios</string>
     <string name="pref_header_reminder">Recordatorios</string>
     <string name="reminder_set">Establecido recordatorio para %1$s</string>
-    <string name="reminder_unset">Recordatorio para %1$s desactivado</string>
+    <string name="reminder_unset">No se emitirán recordatios para %1$s</string>
+    <string name="no_promos">No hay ofertas para mostrar</string>
+    <string name="reminder_expire">El cupón de %1$s vence el %2$s</string>
+    <string name="reminder_expire_today">El cupón de %1$s vence hoy</string>
 </resources>

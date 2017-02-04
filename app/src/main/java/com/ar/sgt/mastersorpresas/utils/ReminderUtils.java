@@ -69,7 +69,7 @@ public class ReminderUtils {
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DATE);
-        return Long.parseLong(String.format("%04d", year) + String.format("%02d", month) + String.format("%02d", day));
+        return Long.parseLong(String.format("%04d%02d%02d", year, month, day));
     }
 
     @NonNull
@@ -111,4 +111,12 @@ public class ReminderUtils {
         return null;
 
     }
+
+    public static boolean isToday(Date d) {
+        Calendar c1 = getCurrent();
+        Calendar c2 = getCurrent();
+        c2.setTime(d);
+        return compare(c1, c2) == 0;
+    }
+
 }

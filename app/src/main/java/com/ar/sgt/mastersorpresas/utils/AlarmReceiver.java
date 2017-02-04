@@ -37,15 +37,22 @@ public class AlarmReceiver extends BroadcastReceiver {
             reminderDao.save(reminder);
             AlarmUtils.scheduleAlarm(context, reminder);
 
-            String title = context.getString(R.string.notification_title);
+            String title = reminder.getTitle();
+            String message;
+            if (ReminderUtils.isToday(reminder.getDateTo())) {
+                message = context.getString(R.string.reminder_expire_today, reminder.getTitle());
+            } else {
+                message = context.getString(R.string.reminder_expire, reminder.getTitle(), ReminderUtils.formatDate(reminder.getDateTo()));
+            }
 
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle()
                     .setBigContentTitle(title)
-                    .setSummaryText(title);
+                    .setSummaryText(message);
 
-            style.addLine(reminder.getTitle());
+            style.addLine(message);
             NotificationMngr.showNotification(context, title, style, TAG, reminder.getId().intValue());
         }
 
     }
+
 }

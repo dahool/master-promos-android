@@ -31,6 +31,7 @@ import com.ar.sgt.mastersorpresas.model.Reminder;
 import com.ar.sgt.mastersorpresas.model.ReminderDao;
 import com.ar.sgt.mastersorpresas.task.AsyncTaskStatusListener;
 import com.ar.sgt.mastersorpresas.task.DataUpdateTask;
+import com.ar.sgt.mastersorpresas.utils.AlarmReceiver;
 import com.ar.sgt.mastersorpresas.utils.AlarmUtils;
 import com.ar.sgt.mastersorpresas.utils.ReminderUtils;
 import com.ar.sgt.mastersorpresas.view.OnCardEventListener;
@@ -55,6 +56,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
     private OnFragmentEventListener onFragmentEventListener;
 
+    private Snackbar mSnackbar = null;
 
     public PromoListFragment() {
         // Required empty public constructor
@@ -131,7 +133,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
     }
 
     public void resumeAdapter() {
-        PromoDao promoDao = ((App) getApplication()).getDaoSession().getPromoDao();
+        PromoDao promoDao = getApplication().getDaoSession().getPromoDao();
         List<Promo> promos = promoDao.loadAll();
         adapter = new PromoListViewAdapter(getApplication(), this, promos);
         mRecycleView.setAdapter(adapter);
@@ -139,14 +141,26 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
         mRecycleView.getAdapter().notifyDataSetChanged();
 
         if (promos.isEmpty()) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            refreshData();
+            mSnackbar = Snackbar.make(getView(), R.string.no_promos, Snackbar.LENGTH_INDEFINITE);
+            mSnackbar.show();
+        } else if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+            mSnackbar = null;
         }
+
     }
 
     @Override
     public void onResume() {
-        resumeAdapter();
+
+        PromoDao promoDao = getApplication().getDaoSession().getPromoDao();
+        if (promoDao.count() == 0) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        } else {
+            resumeAdapter();
+        }
+
         super.onResume();
     }
 
@@ -154,7 +168,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
         if (Boolean.TRUE.equals(promo.getScheduled())) return;
 
-        DaoSession daoSession = ((App) getApplication()).getDaoSession();
+        DaoSession daoSession = getApplication().getDaoSession();
 
         PromoDao promoDao = daoSession.getPromoDao();
         ReminderDao reminderDao = daoSession.getReminderDao();
@@ -188,6 +202,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && mRecycleView != null) resumeAdapter();
+        if (!isVisibleToUser && mSnackbar != null && mSnackbar.isShown()) mSnackbar.dismiss();
         super.setUserVisibleHint(isVisibleToUser);
     }
 

@@ -25,9 +25,7 @@ public class BootAlarmRegistrar extends BroadcastReceiver {
 
         Long value = ReminderUtils.calendarToLong(ReminderUtils.getCurrent());
 
-        for (Reminder r : reminderDao.queryBuilder().where(ReminderDao.Properties.NextSchedule.isNotNull(), ReminderDao.Properties.NextSchedule.ge(value)).list()) {
-            AlarmUtils.scheduleAlarm(context, r);
-        }
+        AlarmUtils.scheduleAll(context);
 
         // notify missed alarms
         for (Reminder r : reminderDao.queryBuilder().where(ReminderDao.Properties.NextSchedule.isNotNull(), ReminderDao.Properties.NextSchedule.lt(value)).list()) {

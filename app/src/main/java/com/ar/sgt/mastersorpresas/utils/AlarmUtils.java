@@ -11,8 +11,11 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.ar.sgt.mastersorpresas.App;
 import com.ar.sgt.mastersorpresas.R;
+import com.ar.sgt.mastersorpresas.model.DaoSession;
 import com.ar.sgt.mastersorpresas.model.Reminder;
+import com.ar.sgt.mastersorpresas.model.ReminderDao;
 
 import java.util.Calendar;
 
@@ -24,14 +27,23 @@ public class AlarmUtils {
     private static final String TAG = "AlarmUtils";
 
     public static void scheduleAlarm(Context context, Reminder reminder) {
+        scheduleAlarm(context, reminder, null);
+    }
+
+    private static String getAlarmTime(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String time = sharedPreferences.getString("reminder_time", "10:00");
+        return time;
+    }
+
+    public static void scheduleAlarm(Context context, Reminder reminder, String time) {
 
         if (reminder.getNextSchedule() == null) return;
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String time = sharedPreferences.getString("reminder_time", "10:00");
+        if (time == null) time = getAlarmTime(context);
 
-        int hour = Integer.parseInt(time.substring(0, 2));
-        int min = Integer.parseInt(time.substring(3,5));
+        int hour = Integer.parseInt(time.split(":")[0]);
+        int min = Integer.parseInt(time.split(":")[1]);
 
         Calendar cal = ReminderUtils.longToCalendar(reminder.getNextSchedule());
         cal.set(Calendar.HOUR_OF_DAY, hour);
@@ -65,5 +77,21 @@ public class AlarmUtils {
         return PendingIntent.getBroadcast(context, reminder.getId().intValue(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
+    public static void scheduleAll(Context context) {
+        scheduleAlarm(context, null);
+    }
+
+    public static void scheduleAll(Context context, String time) {
+        App application = (App) context.getApplicationContext();
+        DaoSession daoSession = application.getDaoSession();
+        ReminderDao reminderDao = daoSession.getReminderDao();
+
+        Long value = ReminderUtils.calendarToLong(ReminderUtils.getCurrent());
+
+        for (Reminder r : reminderDao.queryBuilder().where(ReminderDao.Properties.NextSchedule.isNotNull(), ReminderDao.Properties.NextSchedule.ge(value)).list()) {
+            AlarmUtils.scheduleAlarm(context, r, time);
+        }
+
+    }
 
 }
