@@ -25,8 +25,14 @@
     <string name="tab_reminder">Reminders</string>
     <string name="reminder_expire">Voucher %1$s expires on %2$s</string>
     <string name="reminder_expire_today">Voucher %1$s expires today</string>
+    <string name="reminder_expire_short">Expires on %1$s</string>
+    <string name="reminder_expire_today_short">Expires Today</string>
     <string name="no_promos">No promotions to show</string>
-
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_confirm">Confirm delete?</string>
+    <string name="cancel">Cancel</string>
+    <string name="next_reminder">Tomorrow</string>
     <!-- Strings related to Settings -->
 
     <!-- Example settings for Notifications -->

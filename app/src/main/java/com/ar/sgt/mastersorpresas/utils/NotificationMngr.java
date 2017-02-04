@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.ar.sgt.mastersorpresas.MainActivity;
 import com.ar.sgt.mastersorpresas.R;
 import com.ar.sgt.mastersorpresas.model.Promo;
+import com.ar.sgt.mastersorpresas.model.Reminder;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class NotificationMngr {
 
     private static final String NOTIFICATION_GROUP = "SorpresasNotification";
 
-    public static void showNotification(Context context, List<Promo> promos) {
+    public static void showNewPromoNotification(Context context, List<Promo> promos) {
 
         String title = context.getString(R.string.notification_title);
 
@@ -38,27 +39,29 @@ public class NotificationMngr {
             style.addLine(p.getText());
         }
 
-        showNotification(context, title, style, NOTIFICATION_GROUP, NOTIFICATION_ID);
+        NotificationCompat.Builder mBuilder = buildNotification(context)
+                        .setContentTitle(title)
+                        .setContentText(title)
+                        .setGroup(NOTIFICATION_GROUP)
+                        .setStyle(style);
 
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
-    public static void showNotification(Context context, String title, NotificationCompat.Style style, String group, int id) {
+    public static NotificationCompat.Builder buildNotification(Context context) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         Intent activityIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                         .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setContentTitle(title)
-                        .setContentText(title)
-                        .setGroup(group)
+                        .setSmallIcon(R.drawable.ic_giftcard)
                         .setGroupSummary(true)
-                        .setAutoCancel(true)
-                        .setStyle(style);
+                        .setAutoCancel(true);
 
         String ringtone = sharedPreferences.getString("notifications_new_message_ringtone", "");
         if (!TextUtils.isEmpty(ringtone)) {
@@ -71,15 +74,17 @@ public class NotificationMngr {
             mBuilder.setVibrate(v);
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = mBuilder.build();
-
-        manager.notify(id, notification);
+        return mBuilder;
     }
 
     public static void hideNotification(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancelAll();
+    }
+
+    public static void hideNotification(Context context, int id) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(id);
     }
 
 }

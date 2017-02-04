@@ -185,6 +185,10 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
             AlarmUtils.scheduleAlarm(getContext(), reminder);
 
+            Intent newIntent = new Intent(getContext(), AlarmReceiver.class);
+            newIntent.putExtra(AlarmReceiver.REMINDER_KEY, reminder.getId());
+            getContext().sendBroadcast(newIntent);
+
             promo.setScheduled(Boolean.TRUE);
             promoDao.save(promo);
 

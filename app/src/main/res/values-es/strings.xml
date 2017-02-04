@@ -27,4 +27,11 @@
     <string name="no_promos">No hay ofertas para mostrar</string>
     <string name="reminder_expire">El cupón de %1$s vence el %2$s</string>
     <string name="reminder_expire_today">El cupón de %1$s vence hoy</string>
+    <string name="delete_confirm">¿Confirma eliminación?</string>
+    <string name="no">No</string>
+    <string name="yes">Sí</string>
+    <string name="cancel">Cancelar</string>
+    <string name="next_reminder">Mañana</string>
+    <string name="reminder_expire_short">Vence el %1$s</string>
+    <string name="reminder_expire_today_short">Vence hoy</string>
 </resources>

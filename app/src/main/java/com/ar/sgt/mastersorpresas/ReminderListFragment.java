@@ -1,10 +1,13 @@
 package com.ar.sgt.mastersorpresas;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -99,19 +102,35 @@ public class ReminderListFragment extends Fragment implements OnCardEventListene
         super.onResume();
     }
 
-    public void onDeleteEvent(Reminder item) {
-        ReminderDao itemDao = ((App) getApplication()).getDaoSession().getReminderDao();
-        PromoDao promoDao = ((App) getApplication()).getDaoSession().getPromoDao();
-        Promo promo = promoDao.load(item.getParentKey());
-        if (promo != null) {
-            promo.setScheduled(Boolean.FALSE);
-            promoDao.save(promo);
-        }
-        AlarmUtils.cancelAlarm(getContext(), item);
-        itemDao.delete(item);
-        resumeAdapter();
+    public void onDeleteEvent(final Reminder item) {
 
-        this.onFragmentEventListener.onFragmentEvent(getId());
+        DialogInterface.OnClickListener diog = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == DialogInterface.BUTTON_POSITIVE) {
+
+                    ReminderDao itemDao = ((App) getApplication()).getDaoSession().getReminderDao();
+                    PromoDao promoDao = ((App) getApplication()).getDaoSession().getPromoDao();
+                    Promo promo = promoDao.load(item.getParentKey());
+                    if (promo != null) {
+                        promo.setScheduled(Boolean.FALSE);
+                        promoDao.save(promo);
+                    }
+                    AlarmUtils.cancelAlarm(getContext(), item);
+                    itemDao.delete(item);
+                    resumeAdapter();
+
+                    onFragmentEventListener.onFragmentEvent(getId());
+                }
+            }
+        };
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage(R.string.delete_confirm);
+        dialog.setPositiveButton(R.string.yes, diog);
+        dialog.setNegativeButton(R.string.no, diog);
+        dialog.show();
+
     }
 
     @Override
@@ -121,7 +140,6 @@ public class ReminderListFragment extends Fragment implements OnCardEventListene
     }
 
     public void onDisableEvent(Reminder item) {
-        // TODO manage alarms
         ReminderDao itemDao = ((App) getApplication()).getDaoSession().getReminderDao();
         if (item.getNextSchedule() != null) {
             item.setNextSchedule(null);

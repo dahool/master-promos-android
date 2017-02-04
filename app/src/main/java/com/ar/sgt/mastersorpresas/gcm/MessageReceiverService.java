@@ -1,18 +1,12 @@
 package com.ar.sgt.mastersorpresas.gcm;
 
-import android.app.Service;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.ar.sgt.mastersorpresas.R;
 import com.ar.sgt.mastersorpresas.model.Promo;
 import com.ar.sgt.mastersorpresas.task.DataPersistentHandler;
 import com.ar.sgt.mastersorpresas.task.DataUpdateHandler;
-import com.ar.sgt.mastersorpresas.task.DataUpdateTask;
 import com.ar.sgt.mastersorpresas.utils.NotificationMngr;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -43,7 +37,7 @@ public class MessageReceiverService extends FirebaseMessagingService {
         Log.d(TAG, "Show notification");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (sharedPreferences.getBoolean("notifications_new_message", true)) {
-            NotificationMngr.showNotification(getApplicationContext(), promos);
+            NotificationMngr.showNewPromoNotification(getApplicationContext(), promos);
         }
     }
 

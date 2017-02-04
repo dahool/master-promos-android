@@ -51,6 +51,10 @@
             android:name=".utils.AlarmReceiver" android:enabled="true" android:exported="true" >
         </receiver>
 
+        <receiver
+            android:name=".utils.ReminderUpdateReceiver" android:enabled="true" android:exported="true" >
+        </receiver>
+
     </application>
 
 </manifest>
