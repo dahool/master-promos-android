@@ -74,7 +74,7 @@ public class AlarmUtils {
     private static PendingIntent buildIntent(Context context, Reminder reminder) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(AlarmReceiver.REMINDER_KEY, reminder.getId());
-        return PendingIntent.getBroadcast(context, reminder.getId().intValue(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getBroadcast(context, reminder.getId().intValue(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public static void scheduleAll(Context context) {

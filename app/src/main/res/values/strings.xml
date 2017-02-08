@@ -49,4 +49,6 @@
     <string name="reminder_set">Reminder set for %1$s</string>
     <string name="reminder_unset">Reminder disabled for %1$s</string>
 
+    <string name="crash_toast_text" translatable="false">Oooops! Something wrong happened. Let me report this...</string>
+
 </resources>

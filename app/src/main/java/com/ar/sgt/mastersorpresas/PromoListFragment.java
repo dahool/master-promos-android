@@ -95,7 +95,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promo_list, container, false);
 
-        mRecycleView = (RecyclerView) view.findViewById(R.id.promoList);
+        mRecycleView = (RecyclerView)view.findViewById(R.id.promoList);
         mRecycleView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -112,7 +112,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
         return view;
     }
 
-    private void refreshData() {
+    private synchronized void refreshData() {
         DataUpdateTask task = new DataUpdateTask(getApplication());
         task.setStatusListener(new AsyncTaskStatusListener() {
             @Override
@@ -132,9 +132,14 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
         task.execute();
     }
 
+
     public void resumeAdapter() {
         PromoDao promoDao = getApplication().getDaoSession().getPromoDao();
         List<Promo> promos = promoDao.loadAll();
+
+        // just in case
+        if (mRecycleView == null) return;
+
         adapter = new PromoListViewAdapter(getApplication(), this, promos);
         mRecycleView.setAdapter(adapter);
         mRecycleView.invalidate();
@@ -185,10 +190,6 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
             AlarmUtils.scheduleAlarm(getContext(), reminder);
 
-            Intent newIntent = new Intent(getContext(), AlarmReceiver.class);
-            newIntent.putExtra(AlarmReceiver.REMINDER_KEY, reminder.getId());
-            getContext().sendBroadcast(newIntent);
-
             promo.setScheduled(Boolean.TRUE);
             promoDao.save(promo);
 
@@ -205,9 +206,9 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && mRecycleView != null) resumeAdapter();
         if (!isVisibleToUser && mSnackbar != null && mSnackbar.isShown()) mSnackbar.dismiss();
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
