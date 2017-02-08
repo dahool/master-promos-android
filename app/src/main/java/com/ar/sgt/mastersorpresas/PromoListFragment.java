@@ -52,8 +52,6 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
 
     private PromoListViewAdapter adapter;
 
-    private App application;
-
     private OnFragmentEventListener onFragmentEventListener;
 
     private Snackbar mSnackbar = null;
@@ -63,12 +61,11 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
     }
 
     public App getApplication() {
-        return application;
+        return (App) getContext().getApplicationContext();
     }
 
-    public static PromoListFragment newInstance(Application app) {
+    public static PromoListFragment newInstance() {
         PromoListFragment fragment = new PromoListFragment();
-        fragment.application = (App) app;
         return fragment;
     }
 
@@ -93,6 +90,7 @@ public class PromoListFragment extends Fragment implements OnCardEventListener<P
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_promo_list, container, false);
 
         mRecycleView = (RecyclerView)view.findViewById(R.id.promoList);

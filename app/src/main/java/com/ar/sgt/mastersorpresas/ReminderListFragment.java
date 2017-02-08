@@ -38,19 +38,16 @@ public class ReminderListFragment extends Fragment implements OnCardEventListene
 
     private OnFragmentEventListener onFragmentEventListener;
 
-    private App application;
-
     public ReminderListFragment() {
         // Required empty public constructor
     }
 
     public App getApplication() {
-        return application;
+        return (App) getContext().getApplicationContext();
     }
 
-    public static ReminderListFragment newInstance(Application app) {
+    public static ReminderListFragment newInstance() {
         ReminderListFragment fragment = new ReminderListFragment();
-        fragment.application = (App) app;
         return fragment;
     }
 

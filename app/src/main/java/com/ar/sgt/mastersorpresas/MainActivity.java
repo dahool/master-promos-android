@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentEventLi
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PromoListFragment.newInstance(getApplication());
+                    return PromoListFragment.newInstance();
                 case 1:
-                    return ReminderListFragment.newInstance(getApplication());
+                    return ReminderListFragment.newInstance();
                 default:
                     return null;
             }
