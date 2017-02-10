@@ -1,5 +1,6 @@
 package com.ar.sgt.mastersorpresas.utils;
 
+import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,15 +28,24 @@ public class ReminderUpdateReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, intent.getAction());
         Long currentKey = intent.getLongExtra(AlarmReceiver.REMINDER_KEY, -1);
+
+        final App application = (App) context.getApplicationContext();
+        final DaoSession daoSession = application.getDaoSession();
+        final ReminderDao reminderDao = daoSession.getReminderDao();
+        Reminder reminder = null;
+
         switch (intent.getStringExtra(ACTION)) {
-            case ACTION_CANCEL:
-                App application = (App) context.getApplicationContext();
-                DaoSession daoSession = application.getDaoSession();
-                ReminderDao reminderDao = daoSession.getReminderDao();
-                Reminder reminder = reminderDao.load(currentKey);
+            /*case ACTION_CANCEL:
+                reminder = reminderDao.load(currentKey);
                 AlarmUtils.cancelAlarm(context, reminder);
                 reminder.setNextSchedule(null);
                 reminderDao.save(reminder);
+                break;*/
+            case ACTION_RETRY:
+                reminder = reminderDao.load(currentKey);
+                reminder.setNextSchedule(ReminderUtils.getNextSchedule(reminder));
+                reminderDao.save(reminder);
+                AlarmUtils.scheduleAlarm(context, reminder);
                 break;
         }
         NotificationMngr.hideNotification(context, currentKey.intValue());

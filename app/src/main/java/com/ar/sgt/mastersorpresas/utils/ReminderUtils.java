@@ -94,7 +94,7 @@ public class ReminderUtils {
     public static Long getNextSchedule(Reminder reminder) {
         if (reminder.getDateTo() == null || reminder.getDateFrom() == null) return null;
 
-        Calendar newSchedule = getCurrent();
+        Calendar currentDate = getCurrent();
 
         Calendar fromCalendar = getCurrent();
         fromCalendar.setTime(reminder.getDateFrom());
@@ -102,11 +102,11 @@ public class ReminderUtils {
         Calendar endCalendar = getCurrent();
         endCalendar.setTime(reminder.getDateTo());
 
-        if (compare(newSchedule, fromCalendar) < 0) {
+        if (compare(currentDate, fromCalendar) < 0) {
             return calendarToLong(fromCalendar);
-        } else if (compare(newSchedule, endCalendar) < 0) {
-            newSchedule.add(Calendar.DATE, 1);
-            return calendarToLong(fromCalendar);
+        } else if (compare(currentDate, endCalendar) < 0) {
+            currentDate.add(Calendar.DATE, 1);
+            return calendarToLong(currentDate);
         }
         return null;
 

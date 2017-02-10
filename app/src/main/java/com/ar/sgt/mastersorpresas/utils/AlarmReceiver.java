@@ -33,9 +33,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         Reminder reminder = reminderDao.load(currentKey);
 
         if (reminder != null) {
-            reminder.setNextSchedule(ReminderUtils.getNextSchedule(reminder));
+            reminder.setNextSchedule(null);
             reminderDao.save(reminder);
-            AlarmUtils.scheduleAlarm(context, reminder);
 
             String title = reminder.getTitle();
 
@@ -59,7 +58,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
             builder.addAction(R.drawable.ic_notification_off, context.getString(R.string.cancel), getActionIntent(context, reminder, ReminderUpdateReceiver.ACTION_CANCEL));
 
-            if (reminder.getNextSchedule() != null) {
+            if (ReminderUtils.canBeScheduled(reminder)) {
                 builder.addAction(R.drawable.ic_action_reminder_set, context.getString(R.string.next_reminder), getActionIntent(context, reminder, ReminderUpdateReceiver.ACTION_RETRY));
             }
 

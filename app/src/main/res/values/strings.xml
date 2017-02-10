@@ -10,6 +10,7 @@
     <string name="notification_title">Sorpresas</string>
 
     <string name="SERVICE_HOST" translatable="false">https://mcservices-82aca.appspot.com</string>
+    <!--string name="SERVICE_HOST" translatable="false">http://10.0.2.2</string-->
     <string name="REGISTRATION_URL" translatable="false">%1$s/app/register</string>
     <string name="RETRIEVE_URL" translatable="false">%1$s/app/retrieve</string>
 
