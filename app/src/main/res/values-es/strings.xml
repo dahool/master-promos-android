@@ -34,4 +34,7 @@
     <string name="next_reminder">Mañana</string>
     <string name="reminder_expire_short">Vence el %1$s</string>
     <string name="reminder_expire_today_short">Vence hoy</string>
+    <string name="later">Más tarde</string>
+    <string name="repeat_alarm_set">Se te notificará en %1$s minutes</string>
+    <string name="later_minutes">Minutos a agregar a los recordatorios</string>
 </resources>

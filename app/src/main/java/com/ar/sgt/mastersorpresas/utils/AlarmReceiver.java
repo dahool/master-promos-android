@@ -57,7 +57,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setStyle(style);
 
             //builder.addAction(R.drawable.ic_notification_off, context.getString(R.string.cancel), getActionIntent(context, reminder, ReminderUpdateReceiver.ACTION_CANCEL));
-
+            if (!ReminderUtils.isExpired(reminder)) {
+                builder.addAction(R.drawable.ic_action_reminder_renew, context.getString(R.string.later), getActionIntent(context, reminder, ReminderUpdateReceiver.ACTION_LATER));
+            }
             if (ReminderUtils.canBeScheduled(reminder)) {
                 builder.addAction(R.drawable.ic_action_reminder_set, context.getString(R.string.next_reminder), getActionIntent(context, reminder, ReminderUpdateReceiver.ACTION_RETRY));
             }

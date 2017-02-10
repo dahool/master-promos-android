@@ -70,8 +70,8 @@ public class ReminderListViewAdapter extends RecyclerView.Adapter<ReminderListVi
                 holder.disableButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notification_on, 0, 0, 0);
             }
         } else {
-            //holder.deleteButton.setVisibility(View.GONE);
-            holder.disableButton.setVisibility(View.GONE);
+            holder.disableButton.setEnabled(false);
+            holder.disableButton.setAlpha(.5f);
         }
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {

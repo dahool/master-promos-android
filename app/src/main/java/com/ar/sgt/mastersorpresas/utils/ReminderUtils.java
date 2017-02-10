@@ -1,5 +1,8 @@
 package com.ar.sgt.mastersorpresas.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -110,6 +113,22 @@ public class ReminderUtils {
         }
         return null;
 
+    }
+
+    public static Calendar getRepeatTime(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int time = sharedPreferences.getInt("reminder_repeat_time", 15);
+        Calendar calendar = getCurrent();
+        calendar.add(Calendar.MINUTE, time);
+        return calendar;
+    }
+
+
+    public static boolean isExpired(Reminder reminder) {
+        Calendar endCalendar = getCurrent();
+        endCalendar.setTime(reminder.getDateTo());
+
+        return (compare(getCurrent(), endCalendar) > 0);
     }
 
     public static boolean isToday(Date d) {

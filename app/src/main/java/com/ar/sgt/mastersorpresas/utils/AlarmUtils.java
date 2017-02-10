@@ -36,6 +36,22 @@ public class AlarmUtils {
         return time;
     }
 
+    public static void scheduleAlarm(Context context, Calendar cal, Reminder reminder) {
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent alarmIntent = buildIntent(context, reminder);
+
+        // cancel if already exists
+        alarmMgr.cancel(alarmIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), alarmIntent);
+        } else {
+            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), alarmIntent);
+        }
+
+        Log.d(TAG, "Scheduled alarm for " + reminder.getTitle() + " to run on " + cal.getTime());
+    }
+
     public static void scheduleAlarm(Context context, Reminder reminder, String time) {
 
         if (reminder.getNextSchedule() == null) return;
@@ -50,19 +66,7 @@ public class AlarmUtils {
         cal.set(Calendar.MINUTE, min);
         cal.set(Calendar.SECOND, 0);
 
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent alarmIntent = buildIntent(context, reminder);
-
-        // cancel if already exists
-        alarmMgr.cancel(alarmIntent);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), alarmIntent);
-        } else {
-            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), alarmIntent);
-        }
-
-        Log.d(TAG, "Scheduled alarm for " + reminder.getTitle() + " to run on " + cal.getTime());
+        scheduleAlarm(context, cal, reminder);
     }
 
     public static void cancelAlarm(Context context, Reminder reminder) {

@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.view.animation.Interpolator;
 
 import com.ar.sgt.mastersorpresas.utils.AlarmUtils;
 
@@ -120,10 +121,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         // Trigger the listener immediately with the preference's
         // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        try {
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,  PreferenceManager
+                    .getDefaultSharedPreferences(preference.getContext())
+                    .getString(preference.getKey(), ""));
+        } catch (ClassCastException e) {
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, Integer.toString(PreferenceManager
+                    .getDefaultSharedPreferences(preference.getContext())
+                    .getInt(preference.getKey(), 0)));
+        }
 
     }
 
@@ -227,6 +233,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("reminder_time"));
+            bindPreferenceSummaryToValue(findPreference("reminder_repeat_time"));
         }
 
         @Override

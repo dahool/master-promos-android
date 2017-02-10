@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.ar.sgt.mastersorpresas">
 
     <com.ar.sgt.mastersorpresas.pref.TimePickerPreference
         android:defaultValue="10:00"
@@ -6,5 +7,13 @@
         android:key="reminder_time"
         android:dialogTitle="@string/pref_title_reminder_time">
     </com.ar.sgt.mastersorpresas.pref.TimePickerPreference>
+
+    <com.ar.sgt.mastersorpresas.pref.NumberPickerPreference
+        android:key="reminder_repeat_time"
+        android:title="@string/later_minutes"
+        app:min="5"
+        app:step="5"
+        app:max="60"
+        app:defaultValue="15"/>
 
 </PreferenceScreen>
