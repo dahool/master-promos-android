@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.ar.sgt.mastersorpresas.gcm.RegistrationIntentService;
 import com.ar.sgt.mastersorpresas.utils.AlarmReceiver;
+import com.ar.sgt.mastersorpresas.utils.AlarmUtils;
 import com.ar.sgt.mastersorpresas.utils.NotificationMngr;
 import com.ar.sgt.mastersorpresas.view.OnFragmentEventListener;
 
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentEventLi
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        AlarmUtils.scheduleAll(getApplicationContext());
 
     }
 

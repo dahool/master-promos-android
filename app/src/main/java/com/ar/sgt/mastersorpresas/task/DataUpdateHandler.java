@@ -47,7 +47,7 @@ public class DataUpdateHandler {
         return parseResult(retrieveData());
     }
 
-    private List<Promo> parseResult(JSONArray object) {
+    public List<Promo> parseResult(JSONArray object) {
         List<Promo> list = null;
         if (object != null) {
             list = new ArrayList<Promo>(object.length());

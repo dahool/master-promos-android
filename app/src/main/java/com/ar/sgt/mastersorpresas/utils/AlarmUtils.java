@@ -38,7 +38,7 @@ public class AlarmUtils {
 
     public static void scheduleAlarm(Context context, Calendar cal, Reminder reminder) {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent alarmIntent = buildIntent(context, reminder);
+        PendingIntent alarmIntent = buildIntent(context, reminder, true);
 
         // cancel if already exists
         alarmMgr.cancel(alarmIntent);
@@ -71,18 +71,21 @@ public class AlarmUtils {
 
     public static void cancelAlarm(Context context, Reminder reminder) {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(buildIntent(context, reminder));
+        PendingIntent pi = buildIntent(context, reminder, false);
+        if (pi != null) alarmMgr.cancel(pi);
         Log.d(TAG, "Canceled " + reminder.getTitle());
     }
 
-    private static PendingIntent buildIntent(Context context, Reminder reminder) {
+    private static PendingIntent buildIntent(Context context, Reminder reminder, boolean create) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(AlarmReceiver.REMINDER_KEY, reminder.getId());
-        return PendingIntent.getBroadcast(context, reminder.getId().intValue(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (!create) flag = PendingIntent.FLAG_NO_CREATE;
+        return PendingIntent.getBroadcast(context, reminder.getId().intValue(), intent, flag);
     }
 
     public static void scheduleAll(Context context) {
-        scheduleAlarm(context, null);
+        scheduleAll(context, null);
     }
 
     public static void scheduleAll(Context context, String time) {

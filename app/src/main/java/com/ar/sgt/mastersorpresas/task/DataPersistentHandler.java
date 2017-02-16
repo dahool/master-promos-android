@@ -45,6 +45,7 @@ public class DataPersistentHandler {
                     if (promos.contains(p)) {
                         Promo newPromo = promos.get(promos.indexOf(p));
                         if (!newPromo.getImage().equals(p.getImage())) {
+                            p.setText(newPromo.getText());
                             p.setImage(newPromo.getImage());
                             p.setHasStock(newPromo.getHasStock());
                             p.setBitmap(null);

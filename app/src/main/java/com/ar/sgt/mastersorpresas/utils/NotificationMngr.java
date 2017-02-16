@@ -36,7 +36,7 @@ public class NotificationMngr {
                 .setSummaryText(title);
 
         for (Promo p : promos) {
-            style.addLine(p.getText());
+            style.addLine(String.format("%s: %s", p.getTitle(), p.getText()));
         }
 
         NotificationCompat.Builder mBuilder = buildNotification(context)
