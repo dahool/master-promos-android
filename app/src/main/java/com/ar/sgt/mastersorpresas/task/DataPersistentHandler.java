@@ -44,14 +44,14 @@ public class DataPersistentHandler {
                 for (Promo p : promoDao.loadAll()) {
                     if (promos.contains(p)) {
                         Promo newPromo = promos.get(promos.indexOf(p));
+                        p.setText(newPromo.getText());
+                        p.setHasStock(newPromo.getHasStock());
                         if (!newPromo.getImage().equals(p.getImage())) {
-                            p.setText(newPromo.getText());
                             p.setImage(newPromo.getImage());
-                            p.setHasStock(newPromo.getHasStock());
                             p.setBitmap(null);
-                            Log.d(TAG, "Update: " + p);
-                            promoDao.update(p);
                         }
+                        Log.d(TAG, "Update: " + p);
+                        promoDao.update(p);
                     } else {
                         promoDao.delete(p);
                     }
