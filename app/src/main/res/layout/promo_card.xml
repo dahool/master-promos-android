@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 style="?android:attr/borderlessButtonStyle"
-                android:drawableLeft="@drawable/ic_open"
+                android:drawableStart="@drawable/ic_open"
                 android:textColor="@color/buttonTextColor"
                 android:drawableTint="@color/color_action_icons_tint"
                 android:id="@+id/buttonOpen" />
@@ -113,7 +113,7 @@
                 android:layout_weight=".50"
                 android:id="@+id/buttonShare"
                 style="?android:attr/borderlessButtonStyle"
-                android:drawableLeft="@drawable/ic_share"
+                android:drawableStart="@drawable/ic_share"
                 android:drawableTint="@color/color_action_icons_tint"
                 android:textColor="@color/buttonTextColor"/>
 
